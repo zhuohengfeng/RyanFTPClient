@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">m_filemanager</string>
+
+    <string name="load_loading_tip">努力加载中</string>
+    <string name="load_failed_tip">点我再试试？</string>
+    <string name="load_end_tip">--我也是有底线的！--</string>
+
+    <string name="please_wait">请等待</string>
+</resources>
