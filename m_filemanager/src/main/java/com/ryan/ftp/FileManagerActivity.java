@@ -17,7 +17,7 @@ import com.ryan.ftp.ftp.FTPUtils;
 import com.ryan.ftp.model.FileItemBean;
 import com.ryan.ftp.ftp.DownloadService;
 import com.ryan.ftp.presenter.FileItemPresenter;
-import com.ryan.ftp.presenter.FilesInfoPresenter;
+import com.ryan.ftp.presenter.FileListPresenter;
 import com.ryan.ftp.view.IFileItemView;
 import com.ryan.m_filemanager.R;
 
@@ -33,7 +33,7 @@ public class FileManagerActivity extends AppCompatActivity implements IFileItemV
 
     private int PAGE_COUNT = 1;
     private int mTempPageCount = 2;
-    private int PAGE_SIZE = 10;
+    private int PAGE_SIZE = 6;
 
     private RecyclerView mRecyclerView;
 
@@ -117,7 +117,7 @@ public class FileManagerActivity extends AppCompatActivity implements IFileItemV
                 }
                 isLoadMore = true;
                 PAGE_COUNT = mTempPageCount;
-                initData();
+                requireData();
             }
         });
 
@@ -172,24 +172,8 @@ public class FileManagerActivity extends AppCompatActivity implements IFileItemV
      * 获取FTP上所有的文件信息
      */
     private void initAllFiles(){
-        FilesInfoPresenter presenter = new FilesInfoPresenter(this);
-        presenter.getFilesInfo();
-    }
-
-    /**
-     * 获取到所有相册信息
-     * @param data
-     */
-    @Override
-    public void onCompleted(ArrayList<FileItemBean> data) {
-        mAllFtpFilesList = data;
-        initData();
-    }
-
-    private void initData() {
-        FileItemPresenter presenter = new FileItemPresenter(this);
-        Log.d("zhf123", "initData====>PAGE_COUNT="+PAGE_COUNT+", mAllFtpFilesList="+mAllFtpFilesList.size());
-        presenter.getFileItemData(mAllFtpFilesList, PAGE_COUNT, PAGE_SIZE ); // 下载当前第几页的图片到本地
+        FileListPresenter presenter = new FileListPresenter(this);
+        presenter.getFileListFromFtp();
     }
 
     /**
@@ -202,13 +186,27 @@ public class FileManagerActivity extends AppCompatActivity implements IFileItemV
         PAGE_COUNT = 1;
         mTempPageCount = 2;
         mAllList.clear();
-        initData();
+        requireData();
     }
 
+
     /**
-     * 下载完成后，开始调用DataService去加载bitmap放到data中去
+     * 获取到所有相册信息
      * @param data
      */
+    @Override
+    public void onCompleted(ArrayList<FileItemBean> data) {
+        Log.d("zhf1234", "onCompleted data.size="+data.size());
+        mAllFtpFilesList = data;
+        requireData();
+    }
+
+    private void requireData() {
+        FileItemPresenter presenter = new FileItemPresenter(this);
+        Log.d("zhf1234", "requireData====>PAGE_COUNT="+PAGE_COUNT+", mAllFtpFilesList="+mAllFtpFilesList.size());
+        presenter.getFileItemData(mAllFtpFilesList, PAGE_COUNT, PAGE_SIZE ); // 下载当前第几页的图片到本地
+    }
+
     @Override
     public void onDownload(ArrayList<FileItemBean> data) {
         DownloadService.startService(FileManagerActivity.this, data /*, mSubtype*/);
@@ -249,7 +247,7 @@ public class FileManagerActivity extends AppCompatActivity implements IFileItemV
             mSwipeRefreshLayout.setRefreshing(false);
         }
 
-        if (size < 10) {
+        if (size < PAGE_SIZE-1) {
             //第一页如果不够一页就不显示没有更多数据布局
             mAdapter.loadMoreEnd(!isLoadMore);
         } else {

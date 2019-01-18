@@ -12,6 +12,7 @@ import com.ryan.ftp.BaseApplication;
 import com.ryan.ftp.Constants;
 import com.ryan.ftp.model.FileItemBean;
 import com.ryan.ftp.utils.CommonUtils;
+import com.ryan.ftp.utils.FileUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -62,20 +63,21 @@ public class DownloadService extends IntentService {
         }
         int i = 0;
         for (FileItemBean data : datas) {
+            String localPath = downloadFileFromFtpServer(Constants.FTP_SERVER_PATH, data, i++);
+            if (FileUtil.isFileExist(localPath)) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                Bitmap bitmap = BitmapFactory.decodeFile(localPath, options);
+                int width = options.outWidth;
+                int height = options.outHeight;
+                //Log.i("zhf1234", "下载完成=>localPath="+localPath+", i="+i+", width:" + width + ", height:" + height);
 
-            String localPath = downloadFileFromFtpServer(Constants.FTP_PATH_CAMEAR, data, i++);
-            Log.d("zhf123", "下载完成===>localPath="+localPath+", i="+i);
+                data.setPath(localPath)
+                        .setTwidth(width)
+                        .setTheight(height);
+                Log.i("zhf1234", "下载完成=>data="+data);
+            }
 
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            Bitmap bitmap = BitmapFactory.decodeFile(localPath, options);
-            int width = options.outWidth;
-            int height = options.outHeight;
-            Log.i("TAG", "width: " + width + "     height: " + height);
-
-            data.setPath(localPath)
-                    .setWidth(width)
-                    .setHeight(height);
 
             // 这里开始下载图片
 //            Bitmap bitmap = ImageLoader.load(this, data.getUrl());
@@ -92,15 +94,15 @@ public class DownloadService extends IntentService {
 
     // 开启多线程下载
     private String downloadFileFromFtpServer(String serverPath, final FileItemBean fileItem, final int indexInList) {
-        final String serverPathWithFileName = serverPath + fileItem.getName();
+        final String serverPathWithFileName =  fileItem.getTpath();
         final String loaclPath = CommonUtils.getAbsoluteEnvironmentRootPath(BaseApplication.getContext()) // 本地缓存目录
-                + Constants.FTP_PATH_RELATIVE + File.separator + fileItem.getName();
+                + Constants.FTP_PATH_RELATIVE + File.separator+ FileUtil.getFileName(fileItem.getTpath()) ;
         try {
             // 单文件下载
             FTPUtils.getInstance().downloadSingleFile(
                     serverPathWithFileName, // 服务器名字
                     CommonUtils.getAbsoluteEnvironmentRootPath(BaseApplication.getContext()) // 本地缓存目录
-                    + Constants.FTP_PATH_RELATIVE + File.separator, fileItem.getName(),
+                    + Constants.FTP_PATH_RELATIVE + File.separator, FileUtil.getFileName(fileItem.getTpath()),
 
                     new FTPUtils.FtpProgressListener() {
 

@@ -13,7 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class FileUtils {
+public class FileUtil {
 
     //检查SDCard存在并且可以读写
     public static boolean isSDCardState(){
@@ -194,19 +194,19 @@ public class FileUtils {
         boolean flag = false;
         File srcFile = new File(srcPath); // 源文件
         if (!srcFile.exists()){
-            Log.i("FileUtils is copyFile：","源文件不存在");
+            Log.i("FileUtil is copyFile：","源文件不存在");
             return false;
         }
         // 获取待复制文件的文件名
         String fileName = srcPath.substring(srcPath.lastIndexOf(File.separator));
         String destPath = destDir + fileName;
         if (destPath.equals(srcPath)){
-            Log.i("FileUtils is copyFile：","源文件路径和目标文件路径重复");
+            Log.i("FileUtil is copyFile：","源文件路径和目标文件路径重复");
             return false;
         }
         File destFile = new File(destPath); // 目标文件
         if (destFile.exists() && destFile.isFile()){
-            Log.i("FileUtils is copyFile：","该路径下已经有一个同名文件");
+            Log.i("FileUtil is copyFile：","该路径下已经有一个同名文件");
             return false;
         }
         File destFileDir = new File(destDir);
@@ -236,7 +236,7 @@ public class FileUtils {
      */
     public static boolean renameTo(String oldPath, String newPath){
         if (oldPath.equals(newPath)){
-            Log.i("FileUtils is renameTo：","文件重命名失败：新旧文件名绝对路径相同");
+            Log.i("FileUtil is renameTo：","文件重命名失败：新旧文件名绝对路径相同");
             return false;
         }
         File oldFile = new File(oldPath);

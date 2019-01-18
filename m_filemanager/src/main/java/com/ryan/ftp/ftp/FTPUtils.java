@@ -134,9 +134,9 @@ public class FTPUtils {
         boolean flag;
         flag = uploadingSingle(singleFile, listener);
         if (flag) {
-            listener.onFtpProgress(Constants.FTP_UPLOAD_SUCCESS, 0, singleFile);
+            if(listener != null) listener.onFtpProgress(Constants.FTP_UPLOAD_SUCCESS, 0, singleFile);
         } else {
-            listener.onFtpProgress(Constants.FTP_UPLOAD_FAIL, 0, singleFile);
+            if(listener != null) listener.onFtpProgress(Constants.FTP_UPLOAD_FAIL, 0, singleFile);
         }
 
         // 上传完成之后关闭连接
@@ -164,9 +164,9 @@ public class FTPUtils {
         for (File singleFile : fileList) {
             flag = uploadingSingle(singleFile, listener);
             if (flag) {
-                listener.onFtpProgress(Constants.FTP_UPLOAD_SUCCESS, 0, singleFile);
+                if(listener != null) listener.onFtpProgress(Constants.FTP_UPLOAD_SUCCESS, 0, singleFile);
             } else {
-                listener.onFtpProgress(Constants.FTP_UPLOAD_FAIL, 0, singleFile);
+                if(listener != null) listener.onFtpProgress(Constants.FTP_UPLOAD_FAIL, 0, singleFile);
             }
         }
 
@@ -269,6 +269,8 @@ public class FTPUtils {
 //            listener.onFtpProgress(Constants.FTP_CONNECT_FAIL, 0, null);
 //            return;
 //        }
+
+        Log.d("zhf123", "downloadSingleFile serverPath="+serverPath);
         if (mFtpClient==null || !mFtpClient.isConnected()) {
             Log.d("zhf123", "连接已经断开");
             return;
@@ -276,8 +278,9 @@ public class FTPUtils {
 
         // 先判断服务器文件是否存在
         FTPFile[] files = mFtpClient.listFiles(serverPath);
+        Log.d("zhf123", "files.length"+files.length);
         if (files.length == 0) {
-            listener.onFtpProgress(Constants.FTP_FILE_NOTEXISTS, 0, null);
+            if(listener != null) listener.onFtpProgress(Constants.FTP_FILE_NOTEXISTS, 0, null);
             return;
         }
 
@@ -292,14 +295,17 @@ public class FTPUtils {
 
         // 接着判断下载的文件是否能断点下载
         long serverSize = files[0].getSize(); // 获取远程文件的长度
+
         File localFile = new File(localPath);
         long localSize = 0;
         if (localFile.exists()) {
             localSize = localFile.length(); // 如果本地文件存在，获取本地文件的长度
-            if (localSize >= serverSize) {
+            //if (localSize >= serverSize) {
                 File file = new File(localPath);
-                file.delete();
-            }
+                if (file.exists()) {
+                    file.delete();
+                }
+            //}
         }
 
         // 进度
@@ -318,7 +324,7 @@ public class FTPUtils {
             if (currentSize / step != process) {
                 process = currentSize / step;
                 if (process % 5 == 0) { // 每隔%5的进度返回一次
-                    listener.onFtpProgress(Constants.FTP_DOWN_LOADING, process, null);
+                    if(listener != null) listener.onFtpProgress(Constants.FTP_DOWN_LOADING, process, null);
                 }
             }
         }
@@ -328,9 +334,9 @@ public class FTPUtils {
 
         // 此方法是来确保流处理完毕，如果没有此方法，可能会造成现程序死掉
         if (mFtpClient.completePendingCommand()) {
-            listener.onFtpProgress(Constants.FTP_DOWN_SUCCESS, 0, new File(localPath));
+            if(listener != null) listener.onFtpProgress(Constants.FTP_DOWN_SUCCESS, 0, new File(localPath));
         } else {
-            listener.onFtpProgress(Constants.FTP_DOWN_FAIL, 0, null);
+            if(listener != null) listener.onFtpProgress(Constants.FTP_DOWN_FAIL, 0, null);
         }
 
 //        // 下载完成之后关闭连接

@@ -11,11 +11,13 @@ public class Constants {
     public final static String FTP_PASSWORD = "rokid";
 
     // 对应FTP服务器上的目录
-    public static final String FTP_SERVER_PATH = "";
+    public static final String FTP_SERVER_PATH = File.separator;
     // 对应FTP服务器上的目录Camera
-    public static final String FTP_PATH_CAMEAR = FTP_SERVER_PATH  + File.separator + "Camera" + File.separator;
+    public static final String FTP_PATH_CAMEAR = FTP_SERVER_PATH + "Camera" + File.separator;
     // 对应FTP服务器上的目录thubnial
-    public static final String FTP_PATH_THUMBNAIL = FTP_SERVER_PATH  + File.separator + ".thumbnail" + File.separator;
+    public static final String FTP_PATH_THUMBNAIL = FTP_SERVER_PATH + ".thumbnail" + File.separator;
+    public static final String JSON_FILE_NAME = "rokid_media.json";
+    public static final String FTP_PATH_FILE_MAP = FTP_SERVER_PATH + JSON_FILE_NAME;
 
 
     /**

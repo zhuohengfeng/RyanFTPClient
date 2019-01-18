@@ -22,7 +22,7 @@
         </activity>
 
         <service android:name="com.ryan.ftp.ftp.DownloadService" />
-        <service android:name="com.ryan.ftp.ftp.FtpService" />
+        <service android:name="com.ryan.ftp.ftp.GetFileListService" />
     </application>
 
 </manifest>

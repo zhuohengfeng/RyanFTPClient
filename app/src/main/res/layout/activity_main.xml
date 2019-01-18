@@ -13,4 +13,12 @@
         android:onClick="onBtnClick"
         android:text="点我，进入文件管理" />
 
+    <ImageView
+        android:id="@+id/showImg"
+        android:background="#dad8da"
+        android:layout_alignParentTop="true"
+        android:scaleType="centerCrop"
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
+
 </RelativeLayout>

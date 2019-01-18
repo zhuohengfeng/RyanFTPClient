@@ -29,7 +29,7 @@ public class CommonUtils {
         if (StringUtil.isBlank(path) || w <= 0 || h <= 0) {
             return null;
         }
-        if (!FileUtils.isFileExist(path)) {
+        if (!FileUtil.isFileExist(path)) {
             return null;
         }
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -114,7 +114,7 @@ public class CommonUtils {
         if (StringUtil.isBlank(pathWithSuffix)) {
             return false;
         } else {
-            String picNameWithSuffix = FileUtils.getFileName(pathWithSuffix);
+            String picNameWithSuffix = FileUtil.getFileName(pathWithSuffix);
             if (picNameWithSuffix.contains(".jpg") || picNameWithSuffix.contains(".png")) {
                 return true;
             }
